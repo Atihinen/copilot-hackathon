@@ -116,8 +116,9 @@ class LiftCar {
     }
 
     draw() {
-        ctx.fillStyle = 'yellow';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        const elevatorImage = new Image();
+        elevatorImage.src = 'elevator-96.png';
+        ctx.drawImage(elevatorImage, this.x, this.y, this.width, this.height);
     }
 
     update() {
