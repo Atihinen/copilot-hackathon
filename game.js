@@ -129,7 +129,7 @@ class LiftCar {
 
     warpToFloor(floorNumber) {
         if (floorNumber >= 0 && floorNumber < FLOORS) {
-            this.y = floorNumber * FLOOR_HEIGHT - this.height;
+            this.y = SCREEN_HEIGHT - (floorNumber + 1) * FLOOR_HEIGHT;
         }
     }
 }
