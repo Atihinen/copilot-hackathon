@@ -72,6 +72,10 @@ class Player {
             this.y = this.currentFloor * FLOOR_HEIGHT - this.height;
         }
     }
+
+    isInSameLane(liftCar) {
+        return this.x >= liftCar.x && this.x <= liftCar.x + liftCar.width;
+    }
 }
 
 // Lift class
@@ -82,6 +86,7 @@ class Lift {
         this.x = x;
         this.y = SCREEN_HEIGHT - this.height;
         this.floors = this.createFloors();
+        this.currentFloor = 0; // Add currentFloor property
     }
 
     createFloors() {
@@ -98,45 +103,6 @@ class Lift {
         this.floors.forEach(floor => floor.draw());
     }
 }
-
-// Create lifts
-const lifts = LIFT_LANES.map(x => new Lift(x));
-
-// Create floors
-const floors = [];
-for (let i = 0; i < FLOORS; i++) {
-    floors.push(new Floor(i * FLOOR_HEIGHT));
-}
-
-// Initialize player
-const player = new Player();
-
-// Draw function
-function draw() {
-    ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    floors.forEach(floor => floor.draw());
-    lifts.forEach(lift => lift.draw());
-    player.draw();
-}
-
-// Initial game loop
-function initialGameLoop() {
-    draw();
-    requestAnimationFrame(initialGameLoop);
-}
-
-// Event listeners for player movement
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-        player.moveLeft();
-    } else if (event.key === 'ArrowRight') {
-        player.moveRight();
-    } else if (event.key === 'ArrowUp') {
-        player.moveUp();
-    } else if (event.key === 'ArrowDown') {
-        player.moveDown();
-    }
-});
 
 // LiftCar class
 class LiftCar {
@@ -160,7 +126,25 @@ class LiftCar {
             this.direction *= -1; // Change direction
         }
     }
+
+    warpToFloor(floorNumber) {
+        if (floorNumber >= 0 && floorNumber < FLOORS) {
+            this.y = SCREEN_HEIGHT - (floorNumber + 1) * FLOOR_HEIGHT;
+        }
+    }
 }
+
+// Create lifts
+const lifts = LIFT_LANES.map(x => new Lift(x));
+
+// Create floors
+const floors = [];
+for (let i = 0; i < FLOORS; i++) {
+    floors.push(new Floor(i * FLOOR_HEIGHT));
+}
+
+// Initialize player
+const player = new Player();
 
 // Create lift cars
 const liftCars = LIFT_LANES.map((_, index) => new LiftCar(index));
@@ -179,7 +163,7 @@ function draw() {
     player.draw();
 }
 
-// Modified game loop
+// Game loop
 function gameLoop() {
     update();
     draw();
@@ -188,3 +172,23 @@ function gameLoop() {
 
 // Start the game loop
 gameLoop();
+
+// Event listeners for player movement
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        player.moveLeft();
+    } else if (event.key === 'ArrowRight') {
+        player.moveRight();
+    } else if (event.key === 'ArrowUp') {
+        player.moveUp();
+    } else if (event.key === 'ArrowDown') {
+        player.moveDown();
+    } else if (event.key >= '1' && event.key <= '5') {
+        const floorNumber = parseInt(event.key) - 1;
+        liftCars.forEach(liftCar => {
+            if (player.isInSameLane(liftCar)) {
+                liftCar.warpToFloor(floorNumber);
+            }
+        });
+    }
+});
