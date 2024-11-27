@@ -117,10 +117,10 @@ function draw() {
     player.draw();
 }
 
-// Game loop
-function gameLoop() {
+// Initial game loop
+function initialGameLoop() {
     draw();
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(initialGameLoop);
 }
 
 // Event listeners for player movement
@@ -135,6 +135,54 @@ document.addEventListener('keydown', (event) => {
         player.moveDown();
     }
 });
+
+// LiftCar class
+class LiftCar {
+    constructor(lane) {
+        this.width = LIFT_WIDTH;
+        this.height = PLAYER_HEIGHT;
+        this.x = LIFT_LANES[lane];
+        this.y = SCREEN_HEIGHT - this.height;
+        this.speed = 2;
+        this.direction = -1; // -1 for up, 1 for down
+    }
+
+    draw() {
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+
+    update() {
+        this.y += this.speed * this.direction;
+        if (this.y <= 0 || this.y >= SCREEN_HEIGHT - this.height) {
+            this.direction *= -1; // Change direction
+        }
+    }
+}
+
+// Create lift cars
+const liftCars = LIFT_LANES.map((_, index) => new LiftCar(index));
+
+// Update function
+function update() {
+    liftCars.forEach(liftCar => liftCar.update());
+}
+
+// Draw function
+function draw() {
+    ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    floors.forEach(floor => floor.draw());
+    lifts.forEach(lift => lift.draw());
+    liftCars.forEach(liftCar => liftCar.draw()); // Ensure lift cars are drawn
+    player.draw();
+}
+
+// Modified game loop
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
 
 // Start the game loop
 gameLoop();
