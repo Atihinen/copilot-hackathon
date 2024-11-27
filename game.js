@@ -11,6 +11,9 @@ const PLAYER_HEIGHT = 50;
 const LIFT_LANES = [100, 350, 600]; // X positions of the lift lanes
 
 // Player class
+const frogImage = new Image();
+frogImage.src = 'frog.png'; 
+
 class Player {
     constructor() {
         this.width = PLAYER_WIDTH;
@@ -21,10 +24,9 @@ class Player {
     }
 
     draw() {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(frogImage, this.x, this.y, this.width, this.height);
     }
-
+    
     moveLeft() {
         if (this.currentLane > 0) {
             this.currentLane--;
