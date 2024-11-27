@@ -1,0 +1,6 @@
+Browser game
+
+player is a lift group operator. and is on top of the view
+in view there are 3 lifts in a building
+player is operating on top of the lifts
+player can move from left to right between the lift lanes
